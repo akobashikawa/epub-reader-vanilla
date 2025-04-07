@@ -1,14 +1,13 @@
-# Contents of `README.md`
-
 # EPUB Reader
 
 ## Overview
-The EPUB Reader is a web application designed to read and display EPUB files. It provides a user-friendly interface for navigating through the content of EPUB books.
+EPUB reader studio with vanilla js.
+
+Using [futurepress/epub.js: Enhanced eBooks in the browser.](https://github.com/futurepress/epub.js)
 
 ## Features
 - Load and parse EPUB files.
 - Render content in a readable format.
-- Responsive design for various devices.
 
 ## Installation
 1. Clone the repository:
