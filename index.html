@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epub Reader</title>
+
+    <link rel="stylesheet" href="https://matcha.mizu.sh/matcha.css">
+    <style>
+        .reader-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #content-display {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            min-height: 400px;
+            background-color: #fff;
+        }
+        #navigation {
+            margin: 20px 0;
+            text-align: center;
+        }
+        #toc-container {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+        }
+        .file-section {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        #current-page {
+            margin: 0 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="reader-container">
+        <h1>Epub Reader</h1>
+        
+        <div class="file-section">
+            <input type="file" id="file-input" accept=".epub">
+            <button id="load-epub" class="btn btn-primary">Load EPUB</button>
+        </div>
+
+        <div id="navigation">
+            <button id="prev-page" class="btn">Previous</button>
+            <span id="current-page">Page: 0/0</span>
+            <button id="next-page" class="btn">Next</button>
+        </div>
+
+        <div id="toc-container">
+            <h3>Table of Contents</h3>
+            <ul id="toc-list"></ul>
+        </div>
+
+        <div id="content-area">
+            <p>Please load an EPUB file to start reading.</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
