@@ -38,63 +38,42 @@ export async function initReader(epubData, contentArea) {
         try {
             const chapter = epubData.toc[index];
             await currentBook.ready;
-
-            // Get spine item using the cfi if available, otherwise use href
-            let spineItem;
-            if (chapter.cfi) {
-                spineItem = await currentBook.spine.get(chapter.cfi);
-            } else {
-                const cleanHref = chapter.href.split('#')[0];
-                spineItem = await currentBook.spine.get(cleanHref);
-            }
-
+    
+            const spineItem = chapter.cfi 
+                ? await currentBook.spine.get(chapter.cfi)
+                : await currentBook.spine.get(chapter.href.split('#')[0]);
+    
             if (!spineItem) {
-                throw new Error(`Could not find spine item for chapter: ${chapter.label}`);
+                throw new Error(`Chapter not found: ${chapter.label}`);
             }
-
-            // Load the content
+    
             const html = await spineItem.load();
-
-            // Usamos un div temporal para procesar el HTML
             const content = document.createElement('div');
-            // Array.from(html.childNodes).forEach(node => {
-            //     content.appendChild(node.cloneNode(true));
-            // });
             content.innerHTML = html.innerHTML;
-
-            // Fix resource URLs before rendering
-            const resources = content.querySelectorAll('img, link[rel="stylesheet"], a[href]');
-            resources.forEach(element => {
-                const originalSrc = element.getAttribute('src') || element.getAttribute('href');
-                if (originalSrc && !originalSrc.startsWith('http') && !originalSrc.startsWith('#')) {
+    
+            // Procesar recursos
+            content.querySelectorAll('[src],[href]').forEach(element => {
+                const attr = element.hasAttribute('src') ? 'src' : 'href';
+                const originalSrc = element.getAttribute(attr);
+                
+                if (originalSrc && !/^(https?:|#)/.test(originalSrc)) {
                     try {
-                        const resolvedUrl = currentBook.resolve(originalSrc);
-                        console.log('originalSrc:', originalSrc);
-                        console.log('Resolved URL:', resolvedUrl);
-                        if (element.tagName === 'IMG') {
-                            element.src = resolvedUrl;
-                        } else if (element.tagName === 'LINK') {
-                            element.href = resolvedUrl;
-                        } else if (element.tagName === 'A') {
-                            if (!originalSrc.startsWith('#')) {
-                                element.href = resolvedUrl;
-                            }
-                        }
+                        element.setAttribute(attr, currentBook.resolve(originalSrc));
                     } catch (e) {
                         console.warn(`Failed to resolve URL: ${originalSrc}`, e);
                     }
                 }
             });
-
-            // Clear the content area first
-            contentArea.innerHTML = content.innerHTML;
-            
+    
+            contentArea.innerHTML = '';
+            contentArea.appendChild(content);
             currentChapterIndex = index;
             updatePageInfo();
-
+            contentArea.scrollTo(0, 0);
+    
         } catch (error) {
             console.error('Error rendering chapter:', error);
-            contentArea.innerHTML = `<p>Error loading chapter content: ${error.message}</p>`;
+            contentArea.innerHTML = `<p>Error: ${error.message}</p>`;
         }
     }
 
