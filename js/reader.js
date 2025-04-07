@@ -1,3 +1,5 @@
+import { getChapterContent } from './epub-parser.js';
+
 let currentBook = null;
 let currentChapterIndex = 0;
 
@@ -39,15 +41,18 @@ export async function initReader(epubData, contentArea) {
             const chapter = epubData.toc[index];
             await currentBook.ready;
     
-            const spineItem = chapter.cfi 
-                ? await currentBook.spine.get(chapter.cfi)
-                : await currentBook.spine.get(chapter.href.split('#')[0]);
+            const chapterId = chapter.cfi || chapter.href.split('#')[0];
+            // const spineItem = chapter.cfi 
+            //     ? await currentBook.spine.get(chapter.cfi)
+            //     : await currentBook.spine.get(chapter.href.split('#')[0]);
     
-            if (!spineItem) {
-                throw new Error(`Chapter not found: ${chapter.label}`);
-            }
+            // if (!spineItem) {
+            //     throw new Error(`Chapter not found: ${chapter.label}`);
+            // }
     
-            const html = await spineItem.load();
+            // const html = await spineItem.load();
+            const html = await getChapterContent(currentBook, chapterId);
+
             const content = document.createElement('div');
             content.innerHTML = html.innerHTML;
     

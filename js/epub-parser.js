@@ -32,7 +32,7 @@ export function parseEpub(file) {
     });
 }
 
-export function renderChapter(book, chapterId) {
+export function getChapterContent(book, chapterId) {
     return new Promise(async (resolve, reject) => {
         try {
             const chapter = await book.spine.get(chapterId);
