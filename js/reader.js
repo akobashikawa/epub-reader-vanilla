@@ -57,9 +57,10 @@ export async function initReader(epubData, contentArea) {
 
             // Usamos un div temporal para procesar el HTML
             const content = document.createElement('div');
-            Array.from(html.childNodes).forEach(node => {
-                content.appendChild(node.cloneNode(true));
-            });
+            // Array.from(html.childNodes).forEach(node => {
+            //     content.appendChild(node.cloneNode(true));
+            // });
+            content.innerHTML = html.innerHTML;
 
             // Fix resource URLs before rendering
             const resources = content.querySelectorAll('img, link[rel="stylesheet"], a[href]');
@@ -68,6 +69,8 @@ export async function initReader(epubData, contentArea) {
                 if (originalSrc && !originalSrc.startsWith('http') && !originalSrc.startsWith('#')) {
                     try {
                         const resolvedUrl = currentBook.resolve(originalSrc);
+                        console.log('originalSrc:', originalSrc);
+                        console.log('Resolved URL:', resolvedUrl);
                         if (element.tagName === 'IMG') {
                             element.src = resolvedUrl;
                         } else if (element.tagName === 'LINK') {
