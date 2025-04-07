@@ -84,7 +84,7 @@ export async function initReader(epubData, contentArea) {
             });
 
             // Clear the content area first
-            contentArea.innerHTML = tempDiv.innerHTML;
+            contentArea.innerHTML = content.innerHTML;
             
             currentChapterIndex = index;
             updatePageInfo();
